@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Учебный стенд для практической работы № 4 по автоматизации тестирования",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.js",
     "start:test": "node test-server.js",
@@ -15,7 +17,8 @@
     "e2e:open": "cypress open"
   },
   "devDependencies": {
+    "cypress": "^15.0.0",
     "jest": "^30.0.0",
-    "cypress": "^15.0.0"
+    "start-server-and-test": "^3.0.13"
   }
 }

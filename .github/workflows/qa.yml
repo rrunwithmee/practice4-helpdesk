@@ -21,11 +21,12 @@ jobs:
         run: npm test
         continue-on-error: true
 
-      # Cypress сам запустит сервер и дождется его
-      - name: Run Cypress E2E tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm run start:test
-          wait-on: 'http://127.0.0.1:3000/api/health'
-          wait-on-timeout: 60
-          browser: chrome
+      # устанавливаем start-server-and-test
+      - name: Install start-server-and-test
+        run: npm install --save-dev start-server-and-test
+
+      # запускаем E2E-тесты
+      - name: Run E2E Tests
+        run: npm run test:e2e:ci
+        env:
+          CYPRESS_baseUrl: http://127.0.0.1:3000
