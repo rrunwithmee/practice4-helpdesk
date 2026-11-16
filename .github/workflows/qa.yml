@@ -7,13 +7,39 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          
       - name: Install dependencies
         run: npm install
+
+      # запускаем Unit и Integration тесты
       - name: Unit and integration tests
         run: npm test
-      # Самостоятельное задание: добавить запуск Cypress E2E.
-      # Сначала запустите тестовый сервер и дождитесь /api/health.
+        continue-on-error: true
+
+      # устанавливаем утилиту для ожидания сервера
+      - name: Install wait-on
+        run: npm install -D wait-on
+
+      # запускаем сервер в фоне
+      - name: Start Test Server
+        run: npm run start:test &
+
+      # ждем готовности сервера
+      - name: Wait for Server Health
+        run: npx wait-on http://127.0.0.1:3000/api/health --timeout 30000
+
+      # запускаем Cypress 
+      - name: Run Cypress E2E tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm run start:test # Cypress сам запустит сервер
+          wait-on: 'http://127.0.0.1:3000/api/health'
+          browser: chrome

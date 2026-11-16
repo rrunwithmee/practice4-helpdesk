@@ -8,6 +8,7 @@ const listMessage = document.querySelector('#list-message');
 const search = document.querySelector('#search');
 const statusFilter = document.querySelector('#filter-status');
 const categoryFilter = document.querySelector('#filter-category');
+const priorityFilter = document.querySelector('#filter-priority'); // чиню фильтр по приоритету
 
 const statusLabels = { new: 'Новая', in_progress: 'В работе', resolved: 'Завершена' };
 const priorityLabels = { low: 'Низкий', medium: 'Средний', high: 'Высокий' };
@@ -49,14 +50,15 @@ let lastRequest = 0;
 //     listMessage.textContent = 'Не удалось загрузить заявки.';
 //   }
 // }
-
+// исправленный 
 async function loadTickets() {
   const requestId = ++lastRequest;
   try {
     const query = new URLSearchParams({
       search: search.value,
       status: statusFilter.value,
-      category: categoryFilter.value
+      category: categoryFilter.value,
+      priority: priorityFilter.value // чиню фильтр по приоритету
     });
     const response = await fetch(`/api/tickets?${query.toString()}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -164,5 +166,6 @@ list.addEventListener('click', async (event) => {
   await loadTickets();
 });
 
-[search, statusFilter, categoryFilter].forEach((element) => element.addEventListener('input', loadTickets));
+// Добавлен priorityFilter в список слушателей
+[search, statusFilter, categoryFilter, priorityFilter].forEach((element) => element.addEventListener('input', loadTickets));
 loadTickets();

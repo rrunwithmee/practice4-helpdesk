@@ -79,11 +79,14 @@ function filterAndSort(tickets, filters = {}) {
   const search = String(filters.search || '').trim();
   const status = String(filters.status || '').trim();
   const category = String(filters.category || '').trim();
+  const priority = String(filters.priority || '').trim(); // чиню фильтр
   
   return tickets
     .filter((ticket) => {
       if (status && ticket.status !== status) return false;
       if (category && ticket.category !== category) return false;
+      if (priority && ticket.priority !== priority) return false; // чиню фильтр
+      
       if (!search) return true;
       
       // ИСПРАВЛЕНИЕ ДЕФЕКТА 2: приводим все к нижнему регистру для поиска
@@ -94,7 +97,7 @@ function filterAndSort(tickets, filters = {}) {
       return titleLower.includes(searchLower) || descLower.includes(searchLower);
     })
     .sort((a, b) => {
-      const byPriority = PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority]; // ИСПРАВЛЕНИЕ: Сначала high (3), потом medium (2)
+      const byPriority = PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority]; // ИСПРАВЛЕНИЕ ДЕФЕКТА 3
       if (byPriority !== 0) return byPriority;
       
       // ИСПРАВЛЕНИЕ ДЕФЕКТА 3: новые (большая дата) должны идти первыми
