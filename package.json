@@ -14,7 +14,8 @@
     "test:integration": "jest tests/integration --runInBand",
     "test:coverage": "jest --coverage --runInBand",
     "e2e": "cypress run",
-    "e2e:open": "cypress open"
+    "e2e:open": "cypress open",
+    "test:e2e:ci": "start-server-and-test start:test http-get://127.0.0.1:3000/api/health e2e"
   },
   "devDependencies": {
     "cypress": "^15.0.0",
