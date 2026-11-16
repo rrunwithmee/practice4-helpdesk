@@ -145,18 +145,29 @@ test('I-02: API должен возвращать 400 при невалидны�
     expect(afterBody.items.length).toBe(countBefore);
 });
 
-// ТЕСТ 7 сортировка (I-05) прошел
+// ТЕСТ 7 сортировка (I-05)
 test('I-05: API должен сортировать заявки по приоритету и времени', async () => {
+    // вспомогательная функция для паузы тк две заявки с приоритетом high создались настолько быстро, что у них совпало время создания
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
     await fetch(`${base}/api/tickets`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ title: 'Задача 1', description: 'Описание задачи 1', category: 'software', priority: 'low' })
     });
+
+    // пауза 50 мс
+    await delay(50);
+
     await fetch(`${base}/api/tickets`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ title: 'Задача 2', description: 'Описание задачи 2', category: 'hardware', priority: 'high' })
     });
+
+    // пауза 50 мс
+    await delay(50);
+
     await fetch(`${base}/api/tickets`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -166,6 +177,7 @@ test('I-05: API должен сортировать заявки по приор
     const response = await fetch(`${base}/api/tickets`);
     const body = await response.json();
 
+ 
     expect(body.items[0].title).toBe('Задача 3');
     expect(body.items[1].title).toBe('Задача 2');
     expect(body.items[2].title).toBe('Задача 1');
